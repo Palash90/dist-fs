@@ -1,0 +1,32 @@
+# Use Amazon Corretto 21 as the base image for building the project
+FROM amazoncorretto:21 AS build
+
+# Install Gradle manually
+RUN yum update -y && yum install -y wget unzip && \
+    wget https://services.gradle.org/distributions/gradle-8.3-bin.zip -P /tmp && \
+    unzip /tmp/gradle-8.3-bin.zip -d /opt && \
+    ln -s /opt/gradle-8.3/bin/gradle /usr/bin/gradle
+
+# Set the working directory inside the container
+WORKDIR /app
+
+# Copy the project files to the container
+COPY . /app
+
+# Build the project using Gradle
+RUN gradle build --no-daemon
+
+# Use Amazon Corretto 21 as the runtime to run the Spring Boot application
+FROM amazoncorretto:21
+
+# Set the working directory for the application
+WORKDIR /app
+
+# Copy the built JAR file from the previous stage
+COPY --from=build /app/build/libs/*.jar app.jar
+
+# Expose port 8080 for the application
+EXPOSE 8080
+
+# Specify the command to run the application
+CMD ["java", "-jar", "app.jar"]
