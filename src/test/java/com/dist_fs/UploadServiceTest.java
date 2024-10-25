@@ -44,7 +44,7 @@ public class UploadServiceTest {
         UploadRequest request = new UploadRequest();
         request.setFilePath("a.txt");
         request.setFileSize(2093);
-        List<UploadResponse> uploadResponse = uploadService.getUploadResponse(request);
+        List<UploadResponse> uploadResponse = uploadService.getChunks(request);
 
         assertEquals(3, uploadResponse.size());
 
@@ -81,7 +81,7 @@ public class UploadServiceTest {
         UploadRequest request = new UploadRequest();
         request.setFilePath("a.txt");
         request.setFileSize(1024);
-        List<UploadResponse> uploadResponse = uploadService.getUploadResponse(request);
+        List<UploadResponse> uploadResponse = uploadService.getChunks(request);
 
         assertEquals(1, uploadResponse.size());
 
@@ -105,7 +105,7 @@ public class UploadServiceTest {
         UploadRequest request = new UploadRequest();
         request.setFilePath("a.txt");
         request.setFileSize(123);
-        List<UploadResponse> uploadResponse = uploadService.getUploadResponse(request);
+        List<UploadResponse> uploadResponse = uploadService.getChunks(request);
 
         assertEquals(1, uploadResponse.size());
 
@@ -129,7 +129,7 @@ public class UploadServiceTest {
         UploadRequest request = new UploadRequest();
         request.setFilePath("a.txt");
         request.setFileSize(4096);
-        List<UploadResponse> uploadResponse = uploadService.getUploadResponse(request);
+        List<UploadResponse> uploadResponse = uploadService.getChunks(request);
 
         assertEquals(4, uploadResponse.size());
 
