@@ -51,7 +51,6 @@ public class MasterController {
 
     @PostMapping("upload")
     public List<UploadResponse> masterApi(@RequestBody UploadRequest request) {
-        System.out.println(request);
         return uploadService.getUploadResponse(request);
     }
 }

@@ -2,6 +2,7 @@ package com.dist_fs.beans;
 
 public class UploadRequest {
     private String filePath;
+    private long fileSize;
 
     public long getFileSize() {
         return fileSize;
@@ -18,8 +19,4 @@ public class UploadRequest {
     public void setFilePath(String filePath) {
         this.filePath = filePath;
     }
-
-    private long fileSize;
-
-
 }

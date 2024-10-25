@@ -31,18 +31,14 @@ public class UploadService {
                 .filter(ChunkServerDetails::isLive)
                 .toList();
 
-        for(ChunkServerDetails u: liveChunkServers){
-            System.out.println("Line 35 ----" + u.getUrl());
-        }
-
         long remainingSize = request.getFileSize();
 
-        while(remainingSize > serverDetails.getChunkSize()) {
+        while (remainingSize > serverDetails.getChunkSize()) {
             addNewChunk(liveChunkServers, serverDetails.getChunkSize(), chunks);
             remainingSize -= serverDetails.getChunkSize();
         }
 
-        if(remainingSize > 0) {
+        if (remainingSize > 0) {
             addNewChunk(liveChunkServers, (int) remainingSize, chunks);
         }
         return chunks;
@@ -58,14 +54,14 @@ public class UploadService {
         chunks.add(response);
     }
 
-    private void assignChunkServers(List<ChunkServerDetails> liveChunkServers,  UploadResponse response) {
+    private void assignChunkServers(List<ChunkServerDetails> liveChunkServers, UploadResponse response) {
         // For simplicity, just going with simple round-robin fashion. Later we can make use of other sophisticated algorithm.
 
         List<String> urls = new ArrayList<>();
-        while(urls.size() < serverDetails.getMinReplica()) {
+        while (urls.size() < serverDetails.getMinReplica()) {
             urls.add(liveChunkServers.get(roundRobinPointer).getUrl());
             roundRobinPointer += 1;
-            if(roundRobinPointer == liveChunkServers.size()){
+            if (roundRobinPointer == liveChunkServers.size()) {
                 roundRobinPointer = 0;
             }
         }

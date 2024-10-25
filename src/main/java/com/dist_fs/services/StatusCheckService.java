@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -54,7 +53,6 @@ public class StatusCheckService {
         }
 
         CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).join();
-        //chunkStatus.forEach((key, value) -> System.out.println(key + ": " + value));
     }
 
     private void checkChunkStatus(String chunk) {
