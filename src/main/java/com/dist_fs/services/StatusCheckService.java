@@ -10,6 +10,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
@@ -19,9 +20,9 @@ public class StatusCheckService {
     @Autowired
     private RestTemplate restTemplate;
 
-    private final HashMap<String, ChunkServerDetails> chunkStatus = new HashMap<String, ChunkServerDetails>();
+    private final LinkedHashMap<String, ChunkServerDetails> chunkStatus = new LinkedHashMap<String, ChunkServerDetails>();
 
-    public HashMap<String, ChunkServerDetails> getChunkStatus() {
+    public LinkedHashMap<String, ChunkServerDetails> getChunkStatus() {
         return chunkStatus;
     }
 
@@ -31,6 +32,7 @@ public class StatusCheckService {
         for (String chunk : chunks) {
             ChunkServerDetails chunkServerDetails = new ChunkServerDetails();
             chunkServerDetails.setLive(false);
+            chunkServerDetails.setUrl(chunk);
             chunkStatus.put(chunk, chunkServerDetails);
         }
     }
@@ -57,7 +59,7 @@ public class StatusCheckService {
 
     private void checkChunkStatus(String chunk) {
         try {
-            ResponseEntity<String> response = restTemplate.getForEntity(chunk  + "/hb", String.class);
+            ResponseEntity<String> response = restTemplate.getForEntity(chunk + "/hb", String.class);
             chunkStatus.get(chunk).setLive(response.getStatusCode() == HttpStatus.OK);
         } catch (Exception e) {
             chunkStatus.get(chunk).setLive(false);

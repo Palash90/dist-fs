@@ -13,6 +13,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -47,8 +49,9 @@ public class MasterController {
         return new ResponseEntity<>(hbMap.toString(), headers, HttpStatus.OK);
     }
 
-    @GetMapping("/upload")
-    public List<UploadResponse> masterApi(UploadRequest request) {
+    @PostMapping("upload")
+    public List<UploadResponse> masterApi(@RequestBody UploadRequest request) {
+        System.out.println(request);
         return uploadService.getUploadResponse(request);
     }
 }

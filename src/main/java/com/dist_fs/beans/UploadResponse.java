@@ -31,4 +31,16 @@ public class UploadResponse {
     public void setChunkSize(long chunkSize) {
         this.chunkSize = chunkSize;
     }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("UUID: ").append(this.chunkId);
+        sb.append("Chunk Size: ").append(this.chunkSize);
+        sb.append("Upload to:\n");
+        for (String u : urls) {
+            sb.append("\t").append(u);
+        }
+        return sb.toString();
+    }
 }
