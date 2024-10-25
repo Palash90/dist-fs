@@ -1,6 +1,9 @@
 package com.dist_fs.controllers;
 
+import com.dist_fs.beans.UploadRequest;
+import com.dist_fs.beans.UploadResponse;
 import com.dist_fs.services.StatusCheckService;
+import com.dist_fs.services.UploadService;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -12,6 +15,8 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @ConditionalOnProperty(name = "mode", havingValue = "master")
 @EnableScheduling
@@ -21,6 +26,9 @@ public class MasterController {
 
     @Autowired
     private StatusCheckService statusCheckService;
+
+    @Autowired
+    private UploadService uploadService;
 
     @PostConstruct
     public void init() {
@@ -39,8 +47,8 @@ public class MasterController {
         return new ResponseEntity<>(hbMap.toString(), headers, HttpStatus.OK);
     }
 
-    @GetMapping("/master")
-    public String masterApi() {
-        return "Master API response";
+    @GetMapping("/upload")
+    public List<UploadResponse> masterApi(UploadRequest request) {
+        return uploadService.getUploadResponse(request);
     }
 }

@@ -1,5 +1,6 @@
 package com.dist_fs.services;
 
+import com.dist_fs.beans.ChunkServerDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,9 +19,9 @@ public class StatusCheckService {
     @Autowired
     private RestTemplate restTemplate;
 
-    private final HashMap<String, Boolean> chunkStatus = new HashMap<String, Boolean>();
+    private final HashMap<String, ChunkServerDetails> chunkStatus = new HashMap<String, ChunkServerDetails>();
 
-    public HashMap<String, Boolean> getChunkStatus() {
+    public HashMap<String, ChunkServerDetails> getChunkStatus() {
         return chunkStatus;
     }
 
@@ -28,7 +29,9 @@ public class StatusCheckService {
         String[] chunks = urls != null ? urls.split(";") : new String[]{};
 
         for (String chunk : chunks) {
-            chunkStatus.put(chunk, false);
+            ChunkServerDetails chunkServerDetails = new ChunkServerDetails();
+            chunkServerDetails.setLive(false);
+            chunkStatus.put(chunk, chunkServerDetails);
         }
     }
 
@@ -41,7 +44,7 @@ public class StatusCheckService {
             CompletableFuture<Void> future = CompletableFuture.
                     runAsync(() -> checkChunkStatus(chunk)).
                     orTimeout(2, TimeUnit.SECONDS).exceptionally(e -> {
-                        chunkStatus.put(chunk, false);
+                        chunkStatus.get(chunk).setLive(false);
                         System.err.println("Error checking chunk " + chunk + ": " + e.getMessage());
                         return null;
                     });
@@ -49,19 +52,15 @@ public class StatusCheckService {
         }
 
         CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).join();
-        chunkStatus.forEach((key, value) -> System.out.println(key + ": " + value));
+        //chunkStatus.forEach((key, value) -> System.out.println(key + ": " + value));
     }
 
     private void checkChunkStatus(String chunk) {
         try {
-            ResponseEntity<String> response = restTemplate.getForEntity(chunk, String.class);
-            if (response.getStatusCode() == HttpStatus.OK) {
-                chunkStatus.put(chunk, true);
-            } else {
-                chunkStatus.put(chunk, false);
-            }
+            ResponseEntity<String> response = restTemplate.getForEntity(chunk  + "/hb", String.class);
+            chunkStatus.get(chunk).setLive(response.getStatusCode() == HttpStatus.OK);
         } catch (Exception e) {
-            chunkStatus.put(chunk, false);
+            chunkStatus.get(chunk).setLive(false);
         }
     }
 }

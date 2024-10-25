@@ -19,6 +19,8 @@ services:
       dockerfile: Dockerfile-chunk
     ports:
       - "8082:8080"
+    environment:
+      - DIST_FS_ID=chunk-1
 
   chunk-2:
     image: dist-fs-chunk
@@ -27,6 +29,8 @@ services:
       dockerfile: Dockerfile-chunk
     ports:
       - "8083:8080"
+    environment:
+      - DIST_FS_ID=chunk-2
 
   chunk-3:
     image: dist-fs-chunk
@@ -35,3 +39,5 @@ services:
       dockerfile: Dockerfile-chunk
     ports:
       - "8084:8080"
+    environment:
+      - DIST_FS_ID=chunk-3
