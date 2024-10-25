@@ -10,7 +10,6 @@ public class SlaveController {
 
     @GetMapping("/hb")
     public void hearbeat() {
-        return;
     }
 
     @GetMapping("/chunk")
