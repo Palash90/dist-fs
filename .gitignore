@@ -2,6 +2,7 @@ HELP.md
 .gradle
 build/
 target/
+upload/
 .class
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/

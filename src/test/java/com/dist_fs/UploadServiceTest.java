@@ -1,6 +1,9 @@
 package com.dist_fs;
 
 import com.dist_fs.beans.*;
+import com.dist_fs.beans.model.Chunk;
+import com.dist_fs.beans.model.UploadRequest;
+import com.dist_fs.beans.model.UploadResponse;
 import com.dist_fs.services.StatusCheckService;
 import com.dist_fs.services.UploadService;
 import org.junit.jupiter.api.BeforeEach;

@@ -1,7 +1,7 @@
 package com.dist_fs.controllers;
 
-import com.dist_fs.beans.UploadRequest;
-import com.dist_fs.beans.UploadResponse;
+import com.dist_fs.beans.model.UploadRequest;
+import com.dist_fs.beans.model.UploadResponse;
 import com.dist_fs.services.StatusCheckService;
 import com.dist_fs.services.UploadService;
 import jakarta.annotation.PostConstruct;

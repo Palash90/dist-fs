@@ -1,4 +1,4 @@
-package com.dist_fs.beans;
+package com.dist_fs.beans.model;
 
 import java.util.UUID;
 

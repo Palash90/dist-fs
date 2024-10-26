@@ -1,6 +1,9 @@
 package com.dist_fs.services;
 
 import com.dist_fs.beans.*;
+import com.dist_fs.beans.model.Chunk;
+import com.dist_fs.beans.model.UploadRequest;
+import com.dist_fs.beans.model.UploadResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -41,7 +44,7 @@ public class UploadService {
         for (int i = 0; i < chunks.length; i++) {
             response[i] = new UploadResponse();
             response[i].setChunk(chunks[i]);
-            response[i].setUrls(Arrays.stream(requestToServerMapping.get(chunks[i].getChunkId())).map(c -> c.getUrl()).toList());
+            response[i].setUrls(Arrays.stream(requestToServerMapping.get(chunks[i].getChunkId())).map(c -> c.getUrl() + "/upload").toList());
         }
         return response;
     }

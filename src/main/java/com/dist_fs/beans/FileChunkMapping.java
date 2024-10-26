@@ -1,5 +1,6 @@
 package com.dist_fs.beans;
 
+import com.dist_fs.beans.model.Chunk;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
