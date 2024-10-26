@@ -22,7 +22,7 @@ public class ChunkServerController {
     }
 
     @PostMapping("/upload")
-    public @ResponseBody ResponseEntity<String> upload(@RequestHeader("Chunk-Id") UUID chunkId, @RequestBody byte[] byteStream) {
+    public @ResponseBody ResponseEntity<String> upload(@RequestHeader("chunkId") UUID chunkId, @RequestBody byte[] byteStream) {
         try {
             chunkUploadService.saveByteStreamToDisk(chunkId, byteStream);
             return new ResponseEntity<>("Chunk uploaded successfully", HttpStatus.OK);
