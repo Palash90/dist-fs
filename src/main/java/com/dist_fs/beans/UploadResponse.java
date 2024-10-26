@@ -1,7 +1,6 @@
 package com.dist_fs.beans;
 
 import java.util.List;
-import java.util.UUID;
 
 public class UploadResponse {
     private List<String> urls;

@@ -14,8 +14,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @ConditionalOnProperty(name = "mode", havingValue = "master")
 @EnableScheduling
