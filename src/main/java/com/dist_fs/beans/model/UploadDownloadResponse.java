@@ -2,7 +2,7 @@ package com.dist_fs.beans.model;
 
 import java.util.List;
 
-public class UploadResponse {
+public class UploadDownloadResponse {
     private List<String> urls;
 
     public Chunk getChunk() {

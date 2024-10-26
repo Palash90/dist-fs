@@ -1,7 +1,8 @@
 package com.dist_fs.controllers;
 
 import com.dist_fs.beans.model.UploadRequest;
-import com.dist_fs.beans.model.UploadResponse;
+import com.dist_fs.beans.model.UploadDownloadResponse;
+import com.dist_fs.services.DownloadService;
 import com.dist_fs.services.StatusCheckService;
 import com.dist_fs.services.UploadService;
 import jakarta.annotation.PostConstruct;
@@ -27,6 +28,9 @@ public class MasterController {
     @Autowired
     private UploadService uploadService;
 
+    @Autowired
+    private DownloadService downloadService;
+
     @PostConstruct
     public void init() {
         String envVar = environment.getProperty("DIST_FS_CHUNKS");
@@ -44,8 +48,13 @@ public class MasterController {
         return new ResponseEntity<>(hbMap.toString(), headers, HttpStatus.OK);
     }
 
-    @PostMapping("upload")
-    public @ResponseBody UploadResponse[] masterApi(@RequestBody UploadRequest request) {
+    @PostMapping("/upload")
+    public @ResponseBody UploadDownloadResponse[] processUpload(@RequestBody UploadRequest request) {
         return uploadService.getUploadResponse(request);
+    }
+
+    @PostMapping("/download")
+    public @ResponseBody UploadDownloadResponse[] processDownload(@RequestBody String request) {
+        return downloadService.getDownloadResponse(request);
     }
 }
