@@ -50,7 +50,7 @@ public class MasterController {
     }
 
     @PostMapping("upload")
-    public List<UploadResponse> masterApi(@RequestBody UploadRequest request) {
-        return uploadService.getChunks(request);
+    public UploadResponse[] masterApi(@RequestBody UploadRequest request) {
+        return uploadService.getUploadResponse(request);
     }
 }

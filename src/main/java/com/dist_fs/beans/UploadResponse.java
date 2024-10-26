@@ -5,8 +5,16 @@ import java.util.UUID;
 
 public class UploadResponse {
     private List<String> urls;
-    private UUID chunkId;
-    private long chunkSize;
+
+    public Chunk getChunk() {
+        return chunk;
+    }
+
+    public void setChunk(Chunk chunk) {
+        this.chunk = chunk;
+    }
+
+    private Chunk chunk;
 
     public List<String> getUrls() {
         return urls;
@@ -16,27 +24,11 @@ public class UploadResponse {
         this.urls = urls;
     }
 
-    public UUID getChunkId() {
-        return chunkId;
-    }
-
-    public void setChunkId(UUID chunkId) {
-        this.chunkId = chunkId;
-    }
-
-    public long getChunkSize() {
-        return chunkSize;
-    }
-
-    public void setChunkSize(long chunkSize) {
-        this.chunkSize = chunkSize;
-    }
-
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("UUID: ").append(this.chunkId);
-        sb.append("Chunk Size: ").append(this.chunkSize);
+        sb.append("UUID: ").append(this.chunk.getChunkId());
+        sb.append("Chunk Size: ").append(this.chunk.getChunkSize());
         sb.append("Upload to:\n");
         for (String u : urls) {
             sb.append("\t").append(u);

@@ -1,9 +1,6 @@
 package com.dist_fs;
 
-import com.dist_fs.beans.ChunkServerDetails;
-import com.dist_fs.beans.ServerDetails;
-import com.dist_fs.beans.UploadRequest;
-import com.dist_fs.beans.UploadResponse;
+import com.dist_fs.beans.*;
 import com.dist_fs.services.StatusCheckService;
 import com.dist_fs.services.UploadService;
 import org.junit.jupiter.api.BeforeEach;
@@ -28,6 +25,11 @@ public class UploadServiceTest {
     @Mock
     private ServerDetails severDetails;
 
+    @Mock
+    private FileChunkMapping fileChunkMapping;
+
+    @Mock ChunkToServerMapping chunkToServerMapping;
+
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this); // Initialize mocks
@@ -44,26 +46,26 @@ public class UploadServiceTest {
         UploadRequest request = new UploadRequest();
         request.setFilePath("a.txt");
         request.setFileSize(2093);
-        List<UploadResponse> uploadResponse = uploadService.getChunks(request);
+        UploadResponse[] uploadResponse = uploadService.getUploadResponse(request);
 
-        assertEquals(3, uploadResponse.size());
+        assertEquals(3, uploadResponse.length);
 
-        assertEquals(1024, uploadResponse.get(0).getChunkSize());
-        List<String> firstChunkUrls = uploadResponse.get(0).getUrls();
+        assertEquals(1024, uploadResponse[0].getChunk().getChunkSize());
+        List<String> firstChunkUrls = uploadResponse[0].getUrls();
         assertEquals(3, firstChunkUrls.size());
         assertEquals("chunk1", firstChunkUrls.get(0));
         assertEquals("chunk2", firstChunkUrls.get(1));
         assertEquals("chunk3", firstChunkUrls.get(2));
 
-        assertEquals(1024, uploadResponse.get(1).getChunkSize());
-        List<String> secondChunkUrls = uploadResponse.get(1).getUrls();
+        assertEquals(1024, uploadResponse[1].getChunk().getChunkSize());
+        List<String> secondChunkUrls = uploadResponse[1].getUrls();
         assertEquals(3, secondChunkUrls.size());
         assertEquals("chunk4", secondChunkUrls.get(0));
         assertEquals("chunk1", secondChunkUrls.get(1));
         assertEquals("chunk2", secondChunkUrls.get(2));
 
-        assertEquals(45, uploadResponse.get(2).getChunkSize());
-        List<String> thirdChunkUrls = uploadResponse.get(2).getUrls();
+        assertEquals(45, uploadResponse[2].getChunk().getChunkSize());
+        List<String> thirdChunkUrls = uploadResponse[2].getUrls();
         assertEquals(3, thirdChunkUrls.size());
         assertEquals("chunk3", thirdChunkUrls.get(0));
         assertEquals("chunk4", thirdChunkUrls.get(1));
@@ -81,12 +83,12 @@ public class UploadServiceTest {
         UploadRequest request = new UploadRequest();
         request.setFilePath("a.txt");
         request.setFileSize(1024);
-        List<UploadResponse> uploadResponse = uploadService.getChunks(request);
+        UploadResponse[] uploadResponse = uploadService.getUploadResponse(request);
 
-        assertEquals(1, uploadResponse.size());
+        assertEquals(1, uploadResponse.length);
 
-        assertEquals(1024, uploadResponse.get(0).getChunkSize());
-        List<String> firstChunkUrls = uploadResponse.get(0).getUrls();
+        assertEquals(1024, uploadResponse[0].getChunk().getChunkSize());
+        List<String> firstChunkUrls = uploadResponse[0].getUrls();
         assertEquals(3, firstChunkUrls.size());
         assertEquals("chunk1", firstChunkUrls.get(0));
         assertEquals("chunk2", firstChunkUrls.get(1));
@@ -105,12 +107,12 @@ public class UploadServiceTest {
         UploadRequest request = new UploadRequest();
         request.setFilePath("a.txt");
         request.setFileSize(123);
-        List<UploadResponse> uploadResponse = uploadService.getChunks(request);
+        UploadResponse[] uploadResponse = uploadService.getUploadResponse(request);
 
-        assertEquals(1, uploadResponse.size());
+        assertEquals(1, uploadResponse.length);
 
-        assertEquals(123, uploadResponse.get(0).getChunkSize());
-        List<String> firstChunkUrls = uploadResponse.get(0).getUrls();
+        assertEquals(123, uploadResponse[0].getChunk().getChunkSize());
+        List<String> firstChunkUrls = uploadResponse[0].getUrls();
         assertEquals(3, firstChunkUrls.size());
         assertEquals("chunk1", firstChunkUrls.get(0));
         assertEquals("chunk2", firstChunkUrls.get(1));
@@ -129,33 +131,33 @@ public class UploadServiceTest {
         UploadRequest request = new UploadRequest();
         request.setFilePath("a.txt");
         request.setFileSize(4096);
-        List<UploadResponse> uploadResponse = uploadService.getChunks(request);
+        UploadResponse[] uploadResponse = uploadService.getUploadResponse(request);
 
-        assertEquals(4, uploadResponse.size());
+        assertEquals(4, uploadResponse.length);
 
-        assertEquals(1024, uploadResponse.get(0).getChunkSize());
-        List<String> firstChunkUrls = uploadResponse.get(0).getUrls();
+        assertEquals(1024, uploadResponse[0].getChunk().getChunkSize());
+        List<String> firstChunkUrls = uploadResponse[0].getUrls();
         assertEquals(3, firstChunkUrls.size());
         assertEquals("chunk1", firstChunkUrls.get(0));
         assertEquals("chunk2", firstChunkUrls.get(1));
         assertEquals("chunk3", firstChunkUrls.get(2));
 
-        assertEquals(1024, uploadResponse.get(1).getChunkSize());
-        List<String> secondChunkUrls = uploadResponse.get(1).getUrls();
+        assertEquals(1024, uploadResponse[1].getChunk().getChunkSize());
+        List<String> secondChunkUrls = uploadResponse[1].getUrls();
         assertEquals(3, secondChunkUrls.size());
         assertEquals("chunk4", secondChunkUrls.get(0));
         assertEquals("chunk1", secondChunkUrls.get(1));
         assertEquals("chunk2", secondChunkUrls.get(2));
 
-        assertEquals(1024, uploadResponse.get(2).getChunkSize());
-        List<String> thirdChunkUrls = uploadResponse.get(2).getUrls();
+        assertEquals(1024, uploadResponse[2].getChunk().getChunkSize());
+        List<String> thirdChunkUrls = uploadResponse[2].getUrls();
         assertEquals(3, thirdChunkUrls.size());
         assertEquals("chunk3", thirdChunkUrls.get(0));
         assertEquals("chunk4", thirdChunkUrls.get(1));
         assertEquals("chunk1", thirdChunkUrls.get(2));
 
-        assertEquals(1024, uploadResponse.get(3).getChunkSize());
-        List<String> fourthChunkUrls = uploadResponse.get(3).getUrls();
+        assertEquals(1024, uploadResponse[3].getChunk().getChunkSize());
+        List<String> fourthChunkUrls = uploadResponse[3].getUrls();
         assertEquals(3, fourthChunkUrls.size());
         assertEquals("chunk2", fourthChunkUrls.get(0));
         assertEquals("chunk3", fourthChunkUrls.get(1));

@@ -1,6 +1,7 @@
 ./gradlew bootRun --args='--server.port=9091'
 ./gradlew bootRun --args='--server.port=9092'
 ./gradlew bootRun --args='--server.port=9093'
+./gradlew bootRun --args='--server.port=9094'
 
-$Env:DIST_FS_CHUNKS="http://localhost:9091;http://localhost:9092;http://localhost:9093"
+$Env:DIST_FS_CHUNKS="http://localhost:9091;http://localhost:9092;http://localhost:9093;http://localhost:9094"
 ./gradlew bootRun --args='--server.port=9090 --mode=master'
