@@ -15,6 +15,8 @@ import java.util.List;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class UploadServiceTest {
@@ -31,7 +33,10 @@ public class UploadServiceTest {
     private FileChunkMapping fileChunkMapping;
 
     @Mock
-    ChunkToServerMapping chunkToServerMapping;
+    private ChunkToServerMapping chunkToServerMapping;
+
+    @Mock
+    private IdGenerator idGenerator;
 
     @BeforeEach
     public void setUp() {
@@ -43,12 +48,14 @@ public class UploadServiceTest {
         LinkedHashMap<String, ChunkServerDetails> mockChunkServerDetails = getMockChunkServerDetails();
         HashMap<String, Chunk[]> mockFileChunkMapping = new HashMap<>();
         HashMap<UUID, ChunkServerDetails[]> chunkServerDetailsHashMap = new HashMap<>();
+        UUID[] mockIds = new UUID[]{UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID()};
 
         when(statusService.getChunkStatus()).thenReturn(mockChunkServerDetails);
         when(severDetails.getChunkSize()).thenReturn(1024);
         when(severDetails.getMinReplica()).thenReturn(3);
         when(fileChunkMapping.getFileChunkMapping()).thenReturn(mockFileChunkMapping);
         when(chunkToServerMapping.getChunkToServerMapping()).thenReturn(chunkServerDetailsHashMap);
+        when(idGenerator.getId()).thenReturn(mockIds[0]).thenReturn(mockIds[1]).thenReturn(mockIds[2]);
 
         UploadRequest request = new UploadRequest();
         request.setFilePath("a.txt");
@@ -57,6 +64,7 @@ public class UploadServiceTest {
 
         assertEquals(3, uploadResponse.length);
 
+        assertEquals(mockIds[0], uploadResponse[0].getChunk().getChunkId());
         assertEquals(1024, uploadResponse[0].getChunk().getChunkSize());
         List<String> firstChunkUrls = uploadResponse[0].getUrls();
         assertEquals(3, firstChunkUrls.size());
@@ -64,6 +72,7 @@ public class UploadServiceTest {
         assertEquals("chunk2", firstChunkUrls.get(1));
         assertEquals("chunk3", firstChunkUrls.get(2));
 
+        assertEquals(mockIds[1], uploadResponse[1].getChunk().getChunkId());
         assertEquals(1024, uploadResponse[1].getChunk().getChunkSize());
         List<String> secondChunkUrls = uploadResponse[1].getUrls();
         assertEquals(3, secondChunkUrls.size());
@@ -71,6 +80,7 @@ public class UploadServiceTest {
         assertEquals("chunk1", secondChunkUrls.get(1));
         assertEquals("chunk2", secondChunkUrls.get(2));
 
+        assertEquals(mockIds[2], uploadResponse[2].getChunk().getChunkId());
         assertEquals(45, uploadResponse[2].getChunk().getChunkSize());
         List<String> thirdChunkUrls = uploadResponse[2].getUrls();
         assertEquals(3, thirdChunkUrls.size());
@@ -81,11 +91,32 @@ public class UploadServiceTest {
         assertEquals(1, mockFileChunkMapping.size());
         Chunk[] chunks = mockFileChunkMapping.get("a.txt");
         assertEquals(3, chunks.length);
+        assertEquals(mockIds[0], chunks[0].getChunkId());
         assertEquals(1024, chunks[0].getChunkSize());
+        assertEquals(mockIds[1], chunks[1].getChunkId());
         assertEquals(1024, chunks[1].getChunkSize());
+        assertEquals(mockIds[2], chunks[2].getChunkId());
         assertEquals(45, chunks[2].getChunkSize());
 
         assertEquals(3, chunkServerDetailsHashMap.size());
+        assertTrue(chunkServerDetailsHashMap.containsKey(mockIds[0]));
+        ChunkServerDetails[] chunkServerDetails = chunkServerDetailsHashMap.get(mockIds[0]);
+        assertEquals(3, chunkServerDetails.length);
+        assertEquals(chunkServerDetails[0].getUrl(), "chunk1");
+        assertEquals(chunkServerDetails[1].getUrl(), "chunk2");
+        assertEquals(chunkServerDetails[2].getUrl(), "chunk3");
+
+        chunkServerDetails = chunkServerDetailsHashMap.get(mockIds[1]);
+        assertEquals(3, chunkServerDetails.length);
+        assertEquals(chunkServerDetails[0].getUrl(), "chunk4");
+        assertEquals(chunkServerDetails[1].getUrl(), "chunk1");
+        assertEquals(chunkServerDetails[2].getUrl(), "chunk2");
+
+        chunkServerDetails = chunkServerDetailsHashMap.get(mockIds[2]);
+        assertEquals(3, chunkServerDetails.length);
+        assertEquals(chunkServerDetails[0].getUrl(), "chunk3");
+        assertEquals(chunkServerDetails[1].getUrl(), "chunk4");
+        assertEquals(chunkServerDetails[2].getUrl(), "chunk1");
     }
 
     @Test
@@ -139,10 +170,12 @@ public class UploadServiceTest {
     @Test
     public void testFileChunkingExact4Chunks() {
         LinkedHashMap<String, ChunkServerDetails> mockChunkServerDetails = getMockChunkServerDetails();
+        UUID[] mockIds = new UUID[]{UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID()};
 
         when(statusService.getChunkStatus()).thenReturn(mockChunkServerDetails);
         when(severDetails.getChunkSize()).thenReturn(1024);
         when(severDetails.getMinReplica()).thenReturn(3);
+        when(idGenerator.getId()).thenReturn(mockIds[0]).thenReturn(mockIds[1]).thenReturn(mockIds[2]).thenReturn(mockIds[3]);
 
         UploadRequest request = new UploadRequest();
         request.setFilePath("a.txt");

@@ -23,6 +23,9 @@ public class UploadService {
     @Autowired
     private ChunkToServerMapping chunkToServerMapping;
 
+    @Autowired
+    private IdGenerator idGenerator;
+
     public UploadResponse[] getUploadResponse(UploadRequest request) {
         Chunk[] chunks = distributeFileIntoChunks(request);
         fileChunkMapping.getFileChunkMapping().put(request.getFilePath(), chunks);
@@ -62,7 +65,7 @@ public class UploadService {
     private Chunk createNewChunk(int chunkSize) {
         Chunk chunk = new Chunk();
         chunk.setChunkSize(chunkSize);
-        chunk.setChunkId(UUID.randomUUID());
+        chunk.setChunkId(idGenerator.getId());
         return chunk;
     }
 
