@@ -1,5 +1,6 @@
 package com.dist_fs.controllers;
 
+import com.dist_fs.services.ChunkDownloadService;
 import com.dist_fs.services.ChunkUploadService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -16,9 +17,22 @@ public class ChunkServerController {
     @Autowired
     private ChunkUploadService chunkUploadService;
 
+    @Autowired
+    private ChunkDownloadService chunkDownloadService;
+
     @GetMapping("/hb")
     public ResponseEntity<String> hearbeat() {
         return new ResponseEntity<>("Alive", HttpStatus.OK);
+    }
+
+    @GetMapping("/download/{filePath}")
+    public @ResponseBody ResponseEntity<byte[]> download(@PathVariable String filePath) {
+        try {
+            return new ResponseEntity<>(chunkDownloadService.getFileBytes(filePath), HttpStatus.OK);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @PostMapping("/upload")
