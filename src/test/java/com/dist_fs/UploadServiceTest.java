@@ -9,8 +9,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
@@ -28,7 +30,8 @@ public class UploadServiceTest {
     @Mock
     private FileChunkMapping fileChunkMapping;
 
-    @Mock ChunkToServerMapping chunkToServerMapping;
+    @Mock
+    ChunkToServerMapping chunkToServerMapping;
 
     @BeforeEach
     public void setUp() {
@@ -38,10 +41,14 @@ public class UploadServiceTest {
     @Test
     public void testFileChunking3Chunks() {
         LinkedHashMap<String, ChunkServerDetails> mockChunkServerDetails = getMockChunkServerDetails();
+        HashMap<String, Chunk[]> mockFileChunkMapping = new HashMap<>();
+        HashMap<UUID, ChunkServerDetails[]> chunkServerDetailsHashMap = new HashMap<>();
 
         when(statusService.getChunkStatus()).thenReturn(mockChunkServerDetails);
         when(severDetails.getChunkSize()).thenReturn(1024);
         when(severDetails.getMinReplica()).thenReturn(3);
+        when(fileChunkMapping.getFileChunkMapping()).thenReturn(mockFileChunkMapping);
+        when(chunkToServerMapping.getChunkToServerMapping()).thenReturn(chunkServerDetailsHashMap);
 
         UploadRequest request = new UploadRequest();
         request.setFilePath("a.txt");
@@ -70,6 +77,15 @@ public class UploadServiceTest {
         assertEquals("chunk3", thirdChunkUrls.get(0));
         assertEquals("chunk4", thirdChunkUrls.get(1));
         assertEquals("chunk1", thirdChunkUrls.get(2));
+
+        assertEquals(1, mockFileChunkMapping.size());
+        Chunk[] chunks = mockFileChunkMapping.get("a.txt");
+        assertEquals(3, chunks.length);
+        assertEquals(1024, chunks[0].getChunkSize());
+        assertEquals(1024, chunks[1].getChunkSize());
+        assertEquals(45, chunks[2].getChunkSize());
+
+        assertEquals(3, chunkServerDetailsHashMap.size());
     }
 
     @Test
